@@ -90,13 +90,13 @@ input:checked + .slider:before {
               <li class="breadcrumb-item"><a href="#"><i class="material-icons">home</i> Home</a>
               </li>
 
-              <li class="breadcrumb-item active" aria-current="page">Expense List</li>
+              <li class="breadcrumb-item active" aria-current="page">salary List</li>
             </ol>
           </nav>
           <div class="ms-panel">
             <div class="ms-panel-header">
-              <button type="button" onclick="location.href='add_expense_ui'"  class="btn btn-primary" style="float: right">Add Expense</button>
-              <h6>Expense List</h6>
+              <button type="button" onclick="location.href='add_salary_ui'"  class="btn btn-primary" style="float: right">Add salary</button>
+              <h6>salary List</h6>
 
             </div>
 
@@ -108,10 +108,10 @@ input:checked + .slider:before {
                         <tr>
 
 
-                            <th>Expense Name</th>
-                            <th>Expense Amount</th>
-                            <th>Expense Note</th>
-                            <th>Expense Date</th>
+                            <th>Name</th>
+                            <th>Amount</th>
+                            <th>Note</th>
+                            <th>Date</th>
                             <th>Action</th>
                         </tr>
                         <tbody>
@@ -125,7 +125,7 @@ input:checked + .slider:before {
                             <td>{{ $data->expense_note }}</td>
                             <td>{{ $data->created_at }}</td>
 
-                            <td><a href="edit_expense_ui/{{ $data->id }}"><i class="fa fa-edit"></i></a><span><a  href="javascript:void(0);" onclick="delete_data({{ $data->id }})"><i class="fa fa-trash"></i></a></span> </td>
+                            <td><a href="edit_salary_ui/{{ $data->id }}"><i class="fa fa-edit"></i></a><span><a  href="javascript:void(0);" onclick="delete_data({{ $data->id }})"><i class="fa fa-trash"></i></a></span> </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -164,7 +164,7 @@ function delete_data(id)
         processData: false,
         contentType: false,
         type: 'GET',
-        url: 'delete_expense_data/'+id,
+        url: 'delete_salary_data/'+id,
         success: function (data) {
            alert('Content Delete Successfully')
            location.reload();
@@ -174,13 +174,13 @@ function delete_data(id)
 }
 }
 
-function expense_active_status(id)
+function salary_active_status(id)
 {
     $.ajax({
         processData: false,
         contentType: false,
         type: 'GET',
-        url: 'expense_active_status_update/'+id,
+        url: 'salary_active_status_update/'+id,
         success: function (data) {
 
 

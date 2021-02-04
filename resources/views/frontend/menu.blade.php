@@ -32,6 +32,8 @@
             <div class="col-lg-12 col-sm-12 col-xs-12">
                 <div class="food__nav nav nav-tabs" role="tablist">
                     <a class="active" id="nav-all-tab" data-toggle="tab" href="#nav-all" role="tab">All</a>
+                    <a  data-toggle="tab" href="#recomended" role="tab">Recomended</a>
+                    <a  data-toggle="tab" href="#food_of_week" role="tab">Food Of Week</a>
                     @foreach($categories as $category)
                     <a  data-toggle="tab" href="#{{ $category->id }}" role="tab">{{ $category->category_name }}</a>
                     @endforeach
@@ -41,6 +43,70 @@
         <div class="row mt--30">
             <div class="col-lg-12 col-xs-12 col-sm-12">
                 <div class="fd__tab__content tab-content" id="nav-tabContent">
+
+                    <div class="food__list__tab__content tab-pane fade show" id="recomended" role="tabpanel">
+                        <!-- Start Single Food -->
+
+                        @foreach($recomended as $recomend)
+
+
+                        <div class="single__food__list d-flex wow fadeInUp">
+                            <div class="food__list__thumb">
+                                <a href="menu-details.html">
+                                    <img src="{{asset('menu_photos/')}}/{{ $recomend->image }}" alt="list food images">
+                                </a>
+                            </div>
+                            <div class="food__list__inner d-flex align-items-center justify-content-between">
+                                <div class="food__list__details">
+                                    <h2><a href="menu-details.html">{{ $recomend->name }}</a></h2>
+                                    <p>{{ $recomend->description }}</p>
+                                    <div class="list__btn">
+                                        <a class="food__btn grey--btn theme--hover" href="javascript:;" onclick="cart_add({{ $recomend->id }})">Order Now</a>
+                                    </div>
+                                </div>
+                                <div class="food__rating">
+                                    <div class="list__food__prize">
+                                        <span>Tk {{ $recomend->price }}</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        @endforeach
+                    </div>
+
+                    <div class="food__list__tab__content tab-pane fade show" id="food_of_week" role="tabpanel">
+                        <!-- Start Single Food -->
+
+                        @foreach($food_of_weeks as $recomend)
+
+
+                        <div class="single__food__list d-flex wow fadeInUp">
+                            <div class="food__list__thumb">
+                                <a href="menu-details.html">
+                                    <img src="{{asset('menu_photos/')}}/{{ $recomend->image }}" alt="list food images">
+                                </a>
+                            </div>
+                            <div class="food__list__inner d-flex align-items-center justify-content-between">
+                                <div class="food__list__details">
+                                    <h2><a href="menu-details.html">{{ $recomend->name }}</a></h2>
+                                    <p>{{ $recomend->description }}</p>
+                                    <div class="list__btn">
+                                        <a class="food__btn grey--btn theme--hover" href="javascript:;" onclick="cart_add({{ $recomend->id }})">Order Now</a>
+                                    </div>
+                                </div>
+                                <div class="food__rating">
+                                    <div class="list__food__prize">
+                                        <span>Tk {{ $recomend->price }}</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        @endforeach
+                    </div>
 
                     <div class="food__list__tab__content tab-pane fade show active" id="nav-all" role="tabpanel">
                         <!-- Start Single Food -->

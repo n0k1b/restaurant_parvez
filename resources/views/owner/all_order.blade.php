@@ -132,6 +132,7 @@ input:checked + .slider:before {
                             <th>View Order Menu</th>
                             <th>Total Bill</th>
                             <th>Order Date</th>
+                            <th></th>
 
 
 
@@ -148,8 +149,10 @@ input:checked + .slider:before {
                                <td>{{ $order_infos['table_no']}}</td>
                                <td>{{ $order_infos['customer_name']}}</td>
                                <td><button class="btn btn-sm btn-primary btn-square" style="margin-top:0px" onclick="show_order_menu({{ $order_infos['customer_id'] }})" >View</button></td>
-                               <td>{{ $total }}</td>
+                               <td>{{ $order_infos['total']}}</td>
                                <td>{{ $order_infos['created_at'] }}</td>
+
+                               <td><a href='bill_show/{{ $order_infos['customer_id'] }} ?>'><i class='fas fa-file-invoice text-secondary text-success'></i></a></td>
 
 
                              </tr>
@@ -197,7 +200,7 @@ function show_order_menu(customer_id)
         processData: false,
         contentType: false,
         type: 'GET',
-        url: 'show_order_menu/'+customer_id,
+        url: 'show_completed_order_menu/'+customer_id,
         success: function (data) {
             $("#order_details").html(data);
             $('#menu_table').modal('show');

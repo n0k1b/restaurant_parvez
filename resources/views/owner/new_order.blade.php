@@ -131,6 +131,7 @@ input:checked + .slider:before {
                             <th>View Order Menu</th>
                             <th>Total Bill</th>
                             <th>Payment Confiramtion</th>
+                            <th></th>
 
 
                         </tr>
@@ -145,8 +146,9 @@ input:checked + .slider:before {
                                <td>{{ $order_infos['table_no']}}</td>
                                <td>{{ $order_infos['customer_name']}}</td>
                                <td><button class="btn btn-sm btn-primary btn-square" style="margin-top:0px" onclick="show_order_menu({{ $order_infos['customer_id'] }})" >View</button></td>
-                               <td>{{ $total }}</td>
+                               <td>{{ $order_infos['total'] }}</td>
                                <td><button class="btn btn-sm btn-primary btn-square" style="margin-top:0px" onclick="confirm_payment({{ $order_infos['customer_id'] }})" >Confirm</button></td>
+                               <td><a href='bill_show/{{ $order_infos['customer_id'] }} ?>'><i class='fas fa-file-invoice text-secondary text-success'></i></a></td>
 
                              </tr>
 

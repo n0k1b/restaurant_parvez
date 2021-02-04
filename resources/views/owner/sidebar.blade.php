@@ -46,7 +46,17 @@
       </li>
 
       <li class="menu-item">
+        <a href="{{route('show_all_salary')}}"> <span><i class="fas fa-clipboard-list fs-16"></i>Salary</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
         <a href="{{route('show_report_menu')}}"> <span><i class="fas fa-clipboard-list fs-16"></i>Report</span>
+        </a>
+      </li>
+
+      <li class="menu-item">
+        <a href="{{route('logout')}}"> <span><i class="fas fa-clipboard-list fs-16"></i>Logout</span>
         </a>
       </li>
 

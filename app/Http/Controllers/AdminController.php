@@ -14,6 +14,7 @@ use App\Models\table_unique_id;
 use Hash;
 use Session;
 use Auth;
+use DB;
 
 class AdminController extends Controller
 {
@@ -28,9 +29,38 @@ class AdminController extends Controller
 
     public function owner_home()
     {
+        date_default_timezone_set('Asia/Dhaka');
+        $todays_date = date('Y-m-d');
+        $todays_month = date('m');
+
+        $orders = order::where('created_at','Like',$todays_date."%")->get();
+        $todays_sell_amount = 0;
+        $todays_sell_unit = 0;
+        foreach($orders as $order)
+        {
+            $price = $order->menu->price * $order->quantity;
+            $todays_sell_amount+=$price;
+            $todays_sell_unit+=$order->quantity;
+        }
+
+        $orders = order::where('created_at','Like',"%".$todays_month."%")->get();
+        $monthly_sell_amount = 0;
+        $monthly_sell_unit = 0;
+        foreach($orders as $order)
+        {
+            $price = $order->menu->price * $order->quantity;
+            $monthly_sell_amount+=$price;
+            $monthly_sell_unit+=$order->quantity;
+        }
 
 
-        return view('owner.master');
+
+
+
+
+
+
+        return view('owner.dashboard',compact('todays_sell_unit','todays_sell_amount','monthly_sell_unit','monthly_sell_amount'));
     }
     public function logout()
     {
@@ -289,11 +319,48 @@ class AdminController extends Controller
         $datas = menu::where('res_id',$res_id)->get();
         $datas = $datas->groupBy('category_id');
         $all_foods = menu::where('res_id',$res_id)->get();
+        $current_date = date("Y-m-d");
+        $current_date = date("Y-m-d", strtotime($current_date."+1 days"));
+        $previous_one_month_date = date("Y-m-d", strtotime($current_date."-30 days"));
+        $previous_one_week_date = date("Y-m-d", strtotime($current_date."-7 days"));
 
+       //whereBetween('created_at',[$current_date,$previous_one_month_date])
+        $recomended = order::whereBetween('created_at',[$previous_one_month_date,$current_date])->where('active_status',1)->where('res_id',$res_id)->get();
+       // file_put_contents('test.txt',$current_date." ".$previous_one_month_date." ".json_encode($recomended));
+        $recomended = $recomended->groupBy('menu_id')->map->count();
 
+        $menu_id_recomended = array();
+        foreach($recomended as $menu_id =>$menu)
+        {
+            array_push($menu_id_recomended,$menu_id);
+        }
+
+        //$menu_id_recomended = json_encode($recomended);
+//file_put_contents('test.txt',json_encode($menu_id_recomended)." ".$recomended);
+        $recomended = menu::whereIn('id', $menu_id_recomended)->get();
+
+        $fow = order::whereBetween('created_at',[$previous_one_week_date,$current_date])->where('active_status',1)->where('res_id',$res_id)->get();
+        // file_put_contents('test.txt',$current_date." ".$previous_one_month_date." ".json_encode($recomended));
+         $fow = $fow->groupBy('menu_id')->map->count();
+
+         $menu_id_fow = array();
+         foreach($fow as $menu_id =>$menu)
+         {
+             array_push($menu_id_fow,$menu_id);
+         }
+
+         //$menu_id_recomended = json_encode($recomended);
+ //file_put_contents('test.txt',json_encode($menu_id_recomended)." ".$recomended);
+         $food_of_weeks = menu::whereIn('id', $menu_id_recomended)->get();
+
+        // foreach($recomended as $id => $details)
+        // {
+        //     array_push($menu_id_recomended,$details[0]);
+        // }
+       // file_put_contents('test.txt',json_encode($recomended));
         $categories = menu_category::where('res_id',$res_id)->get();
         // file_put_contents('test.txt',json_encode($data2));
-        return view('frontend.menu',compact('datas','categories','all_foods'));
+        return view('frontend.menu',compact('datas','categories','all_foods','recomended','food_of_weeks'));
         }
         else
         {
@@ -304,7 +371,7 @@ class AdminController extends Controller
 
     public function frontend_index(Request $request)
     {
-
+       // file_put_contents('test.txt',"gello");
         $res_id = Session::get('res_id');
 
         $datas = menu::where('res_id',$res_id)->get();
@@ -312,9 +379,44 @@ class AdminController extends Controller
         $all_foods = menu::where('res_id',$res_id)->get();
 
 
+       //
+       $current_date = date("Y-m-d");
+       $current_date = date("Y-m-d", strtotime($current_date."+1 days"));
+       $previous_one_month_date = date("Y-m-d", strtotime($current_date."-30 days"));
+       $previous_one_week_date = date("Y-m-d", strtotime($current_date."-7 days"));
+
+      //whereBetween('created_at',[$current_date,$previous_one_month_date])
+       $recomended = order::whereBetween('created_at',[$previous_one_month_date,$current_date])->where('active_status',1)->where('res_id',$res_id)->get();
+      // file_put_contents('test.txt',$current_date." ".$previous_one_month_date." ".json_encode($recomended));
+       $recomended = $recomended->groupBy('menu_id')->map->count();
+
+       $menu_id_recomended = array();
+       foreach($recomended as $menu_id =>$menu)
+       {
+           array_push($menu_id_recomended,$menu_id);
+       }
+
+       //$menu_id_recomended = json_encode($recomended);
+//file_put_contents('test.txt',json_encode($menu_id_recomended)." ".$recomended);
+       $recomended = menu::whereIn('id', $menu_id_recomended)->get();
+
+       $fow = order::whereBetween('created_at',[$previous_one_week_date,$current_date])->where('active_status',1)->where('res_id',$res_id)->get();
+       // file_put_contents('test.txt',$current_date." ".$previous_one_month_date." ".json_encode($recomended));
+        $fow = $fow->groupBy('menu_id')->map->count();
+
+        $menu_id_fow = array();
+        foreach($fow as $menu_id =>$menu)
+        {
+            array_push($menu_id_fow,$menu_id);
+        }
+
+        //$menu_id_recomended = json_encode($recomended);
+//file_put_contents('test.txt',json_encode($menu_id_recomended)." ".$recomended);
+        $food_of_weeks = menu::whereIn('id', $menu_id_recomended)->get();
+
         $categories = menu_category::where('res_id',$res_id)->get();
         // file_put_contents('test.txt',json_encode($data2));
-        return view('frontend.menu',compact('datas','categories','all_foods'));
+        return view('frontend.menu',compact('datas','categories','all_foods','recomended','food_of_weeks'));
 
 
     }
@@ -630,11 +732,11 @@ class AdminController extends Controller
 
         $res_id = restaurant_info::where('user_id',$user_id)->first()->id;
         $order_info = order::where('res_id',$res_id)->where('active_status',0)->groupBy('customer_id')->get();
-        $total = 0;
+
         foreach($order_info as $order)
 
         {
-
+            $total = 0;
             $customer_name = customer::where('id',$order->customer_id)->first()->name;
             $orders = order::where('active_status',0)->where('customer_id',$order->customer_id)->get();
             foreach($orders as $order_price)
@@ -642,9 +744,12 @@ class AdminController extends Controller
             {
                 $total+=$order_price->menu->price;
             }
+            $vat = floor($total*.15);
+            $total = $total+$vat;
             $table_no = table_unique_id::where('unique_number',$order->table_no)->first()->table_no;
             $order['customer_name'] = $customer_name;
             $order['table_no'] = $table_no;
+            $order['total'] = $total;
          }
 
 
@@ -654,35 +759,61 @@ class AdminController extends Controller
 
     }
 
+    public function bill_show(Request $request)
+    {
+        $datas = order::where('customer_id',$request->id)->get();
+        $total = 0;
+
+        foreach($datas as $order)
+
+        {
+            $total+=$order->menu->price*$order->quantity;
+
+         }
+         $vat = floor($total*.15);
+         $sub_total = $total+$vat;
+
+
+        $date = date('d-m-Y');
+        // $data = rent_confirmation::where('id',$Request->id)->first();
+        // $data['contract_end'] = date('Y-m-d H:i:s', strtotime('+1 years', strtotime($data->created_at)));
+        // $data['total'] = (int)$data->advance_payment+(int)$data->apartment->apartment_rent;
+        // $data['date'] = $date;
+        return view('owner.bill',compact('datas','date','total','vat','sub_total'));
+    }
+
     public function show_all_order()
     {
         $user_id = Auth::user()->id;
 
         $res_id = restaurant_info::where('user_id',$user_id)->first()->id;
         $order_info = order::where('res_id',$res_id)->where('active_status',1)->groupBy('customer_id')->get();
-        $total = 0;
+
         $i=1;
         foreach($order_info as $order)
 
         {
-
+            $total = 0;
 
             $customer_name = customer::where('id',$order->customer_id)->first()->name;
             $orders = order::where('active_status',1)->where('customer_id',$order->customer_id)->get();
             foreach($orders as $order_price)
 
             {
-                $total+=$order_price->menu->price;
+                $total+=$order_price->menu->price*$order_price->quantity;
             }
+            $vat = floor($total*.15);
+            $total = $total+$vat;
             $table_no = table_unique_id::where('unique_number',$order->table_no)->first()->table_no;
             $order['customer_name'] = $customer_name;
             $order['table_no'] = $table_no;
             $order['serial_no'] = $i++;
+            $order['total'] = $total;
          }
 
 
         // $res_info = menu::where('res_id',$res_id)->get();
-        return view('owner.all_order',compact('order_info','total'));
+        return view('owner.all_order',compact('order_info'));
 
 
     }
@@ -690,6 +821,24 @@ class AdminController extends Controller
     public function show_order_menu($customer_id)
     {
         $order_info = order::where('active_status',0)->where('customer_id',$customer_id)->get();
+        $data = '';
+        foreach($order_info as  $order)
+        {
+            $data.='
+            <tr>
+                <td>'.$order->menu->name.'</td>
+                <td>'.$order->quantity.'</td>
+            </tr>
+            ';
+        }
+        echo $data;
+
+
+    }
+
+    public function show_completed_order_menu($customer_id)
+    {
+        $order_info = order::where('active_status',1)->where('customer_id',$customer_id)->get();
         $data = '';
         foreach($order_info as  $order)
         {
@@ -782,7 +931,77 @@ class AdminController extends Controller
     }
 
     //expense end
+    //salary start
+    public function show_all_salary()
+    {
+        $user_id = Auth::user()->id;
+        $res_id = restaurant_info::where('user_id',$user_id)->first()->id;
+        $res_info = expense::where('res_id',$res_id)->where('expense_type','salary')->get();
 
+        return view('owner.all_salary',['datas'=>$res_info]);
+    }
+    public function add_salary_ui()
+    {
+
+
+        return view('owner.add_salary');
+    }
+
+    public function edit_salary_ui(Request $request)
+    {
+        $id = $request->id;
+        $user_id = Auth::user()->id;
+        $res_id = restaurant_info::where('user_id',$user_id)->first()->id;
+
+
+        $res_info = expense::where('id',$id)->first();
+        return view('owner.edit_salary_info',['data'=>$res_info]);
+    }
+    public function update_salary(Request $request)
+    {
+        $request->validate([
+            'expense_name' => 'required',
+            'expense_amount'=>'required',
+            'expense_note'=>'required',
+
+
+
+        ]);
+
+
+
+        expense::where('id',$request->id)->update(['expense_name'=>$request->expense_name,'expense_amount'=>$request->expense_amount,'expense_note'=>$request->expense_note,'expense_type'=>'salary']);
+
+
+       return redirect()->route('show_all_salary')->with('success','salary Updated Successfully');
+    }
+    public function add_salary(Request $request)
+    {
+         $request->validate([
+        'expense_name' => 'required',
+        'expense_amount'=>'required',
+        'expense_note'=>'required',
+
+
+
+    ]);
+
+
+
+
+        $user_id = Auth::user()->id;
+        $res_id = restaurant_info::where('user_id',$user_id)->first()->id;
+        expense::create(['res_id'=>$res_id,'expense_name'=>$request->expense_name,'expense_amount'=>$request->expense_amount,'expense_note'=>$request->expense_note,'expense_type'=>'salary']);
+        return redirect()->route('show_all_salary')->with('success','New salary Create Successfully');
+
+
+    }
+    public function delete_salary_data(Request $request)
+    {
+        $id = $request->id;
+        expense::where('id',$id)->delete();
+    }
+    //salary end
     //Report start
     function date_compare($a, $b)
     {

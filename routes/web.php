@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('login','login')->name('home');
 Route::view('/','frontend.table_code')->name('table_code');
 
-Route::get('logout','AdminController@logout');
+Route::get('logout','AdminController@logout')->name('logout');
 Route::post('login','AdminController@login')->name('login');
 
 Route::post('check_table_code','AdminController@check_table_code')->name('check_table_code');
@@ -33,7 +33,8 @@ Route::get('checkout','AdminController@checkout')->name('checkout');
 Route::post('order_place','AdminController@order_place')->name('order_place');
 Route::get('view_cart','AdminController@view_cart')->name('view_cart');
 
-Route::group(['prefix' => 'owner'], function () {
+Route::group(['prefix' => 'owner','middleware' => 'owner'], function () {
+    Route::get('bill_show/{id}','AdminController@bill_show');
   Route::get('/', 'AdminController@owner_home')->name('owner_home');
   //menu start
   Route::get('show_all_menu','AdminController@show_all_menu')->name('show_all_menu');
@@ -74,6 +75,7 @@ Route::group(['prefix' => 'owner'], function () {
 
    Route::get('menu_active_status_update/{id}','AdminController@menu_active_status_update')->name('menu_active_status_update');
    Route::get('show_order_menu/{customer_id}','AdminController@show_order_menu')->name('show_order_menu');
+   Route::get('show_completed_order_menu/{customer_id}','AdminController@show_completed_order_menu')->name('show_completed_order_menu');
 
    Route::get('confirm_payment/{customer_id}','AdminController@confirm_payment')->name('confirm_payment');
    //new order end
@@ -93,6 +95,16 @@ Route::group(['prefix' => 'owner'], function () {
     Route::post('show_all_report','AdminController@show_all_report')->name('show_all_report');
 
    //report end
+
+   //salary start
+   Route::get('show_all_salary','AdminController@show_all_salary')->name('show_all_salary');
+   Route::get('add_salary_ui','AdminController@add_salary_ui')->name('add_salary_ui');
+   Route::post('add_salary','AdminController@add_salary')->name('add_salary');
+   Route::get('edit_salary_ui/{id}','AdminController@edit_salary_ui')->name('edit_salary_ui');
+   Route::post('update_salary','AdminController@update_salary')->name('update_salary');
+   Route::get('delete_salary_data/{id}','AdminController@delete_salary_data')->name('delete_salary_data');
+   Route::get('salary_active_status_update/{id}','AdminController@salary_active_status_update')->name('salary_active_status_update');
+   //salary end
 
 });
 
