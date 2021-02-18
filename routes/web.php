@@ -32,6 +32,8 @@ Route::get('cart_delete/{id}','AdminController@cart_delete')->name('cart_delete'
 Route::get('checkout','AdminController@checkout')->name('checkout');
 Route::post('order_place','AdminController@order_place')->name('order_place');
 Route::get('view_cart','AdminController@view_cart')->name('view_cart');
+Route::post('cart_update','AdminController@cart_update')->name('cart_update');
+Route::post('cart_update_dec','AdminController@cart_update_dec')->name('cart_update_dec');
 
 Route::group(['prefix' => 'owner','middleware' => 'owner'], function () {
     Route::get('bill_show/{id}','AdminController@bill_show');

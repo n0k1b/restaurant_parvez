@@ -1,6 +1,16 @@
 @extends('frontend.layout.app')
 @section('page_css')
 <style>
+    input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
     .table-content table th{
         font-size: 12px;
         text-transform: none;
@@ -76,8 +86,14 @@
 @endsection
 
 @section('page_js')
+{{-- <script src="{{ asset('assets') }}/frontend/js/cart.js?{{ time() }}"></script> --}}
 <script>
  $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
         fetch_data();
 
@@ -85,18 +101,7 @@
 
 })
 
-$(".inc").click(function() {
-    updateValue(this, 1);
-});
-$(".dec").click(function() {
-    updateValue(this, -1);
-});
 
-function updateValue(obj, delta) {
-    var item = $(obj).parent().find("input");
-    var newValue = parseInt(item.val(), 10) + delta;
-    item.val(Math.max(newValue, 0));
-}
 function fetch_data()
         {
             $.ajax({

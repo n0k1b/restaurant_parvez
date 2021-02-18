@@ -125,11 +125,42 @@ class AdminController extends Controller
         return view('frontend.checkout',compact('cart','total'));
     }
 
+    public function cart_update(Request $request)
+    {
+        // $myfile = fopen("test2.txt", "a+") or die("Unable to open file!");
+        // fwrite($myfile,$request->quantity."\n");
+
+       // file_put_contents('test.txt',$request->id.' '.$request->quantity);
+        if($request->id && $request->quantity)
+        {
+            $cart = session()->get('cart');
+            $cart[$request->id]["quantity"] = $request->quantity+1;
+              session()->put('cart', $cart);
+            //session()->flash('success', 'Cart updated successfully');
+        }
+    }
+
+    public function cart_update_dec(Request $request)
+    {
+        // $myfile = fopen("test2.txt", "a+") or die("Unable to open file!");
+        // fwrite($myfile,$request->quantity."\n");
+
+       // file_put_contents('test.txt',$request->id.' '.$request->quantity);
+        if($request->id && $request->quantity)
+        {
+            $cart = session()->get('cart');
+            $cart[$request->id]["quantity"] = $request->quantity-1;
+              session()->put('cart', $cart);
+            //session()->flash('success', 'Cart updated successfully');
+        }
+    }
     public function get_cart_data()
     {
+       //session()->forget('cart');
         $data ='';
         $total = 0;
         $cart =session()->get('cart');
+        file_put_contents("test.txt",json_encode($cart));
         foreach( $cart as $id => $details)
         {
             $total += $details['price'] * $details['quantity'];
@@ -140,10 +171,11 @@ class AdminController extends Controller
             <td class="product-price"><span class="amount">'.$details['price'].'</span></td>
             <td class="product-quantity" style="padding: 20px 2px">
             <div>
-            <label for="name">Adult Females</label>
-                <div class="dec button">-</div>
-                    <input type="text" name="adult-female" id="input2" value="0"/>
-                <div class="inc button">+</div>
+            <label for="name"></label>
+                <div class="dec button" onclick="dec('.$id.')">-</div>
+                <input class="quantity quantity-'.$id.'" value="'.$details['quantity'].'" min="0" name="quantity" type="number" id="quantity-'.$id.'"   />
+                    <input type="hidden" id="input_quantity-'.$id.'">
+                <div class="inc button" onclick="inc('.$id.')">+</div>
             </div>
 
 
@@ -178,7 +210,7 @@ class AdminController extends Controller
 
     <a class="food__btn" href="checkout"><span>Proceed to Checkout</span></a>
 </div>
-
+<script src="assets/frontend/js/cart.js?"'.time().'></script>
     ';
 
         $main_data = ['cart_data'=>$data,'cart_footer'=>$data2];
@@ -209,7 +241,10 @@ class AdminController extends Controller
 
         $data ='';
         $total = 0;
-        $cart =session()->get('cart');
+        $cart = session()->get('cart');
+
+
+        //file_put_contents('test.txt',json_encode($cart));
        foreach( $cart as $id => $details)
        {
         $total += $details['price'] * $details['quantity'];
