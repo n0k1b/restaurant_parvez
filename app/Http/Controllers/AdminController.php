@@ -78,7 +78,7 @@ class AdminController extends Controller
             );
             if (auth()->attempt($credentials)) {
                 $user_role = User::where('email',$request->email)->first()->user_role;
-                if($user_role=='owner')
+                if($user_role =='owner')
                 {
                     return redirect()->route('owner_home');
                 }

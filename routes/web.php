@@ -110,7 +110,7 @@ Route::group(['prefix' => 'owner','middleware' => 'owner'], function () {
 
 });
 
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'admin','middleware' => 'admin'], function () {
 
     Route::view('/', 'admin.master')->name('admin_home');
     //restaurant start
